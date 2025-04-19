@@ -1,0 +1,28 @@
+import { Client } from 'pg';
+
+const client = new Client({
+  connectionString: 'postgresql://postgres:progtec@2012@db.jqdtdzcfecawhctswctb.supabase.co:5432/postgres',
+  ssl: { rejectUnauthorized: false }
+});
+client.connect();
+
+export default async function handler(req, res) {
+  const { method } = req;
+
+  if (method === 'GET') {
+    const result = await client.query('SELECT * FROM estoque ORDER BY id');
+    res.status(200).json(result.rows);
+  }
+
+  else if (method === 'POST') {
+    const { id, produto, valor, qtd } = req.body;
+    const total = valor * qtd;
+    await client.query(
+      'INSERT INTO estoque (id, produto, valor, qtd, total) VALUES ($1, $2, $3, $4, $5)',
+      [id, produto, valor, qtd, total]
+    );
+    res.status(200).send('Produto inserido!');
+  }
+
+  // PUT e DELETE podem ser adicionados depois
+}
