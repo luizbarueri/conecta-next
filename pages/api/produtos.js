@@ -1,9 +1,10 @@
 import { Client } from 'pg';
 
 const client = new Client({
-  connectionString: 'postgresql://postgres:progtec@2012@db.jqdtdzcfecawhctswctb.supabase.co:5432/postgres',
+  connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
+
 client.connect();
 
 export default async function handler(req, res) {
